@@ -3,18 +3,19 @@ FROM osixia/web-baseimage:release-1.2.0-dev
 # phpLDAPadmin version
 ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
-# Update packages and install required services and PHP extensions
-RUN apt-get update \
+# Update and install necessary packages with PHP 7.3
+RUN apt-get update && apt-get upgrade -y \
     && /container/tool/add-multiple-process-stack \
-    && apt-get install -y --no-install-recommends \
-       apache2 \
-       php7.4-fpm \
-       ssl-cert \
+    && /container/tool/add-service-available :apache2 :php7.3-fpm :ssl-tools \
+    && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        ca-certificates \
        curl \
-       php7.4-ldap \
-       php7.4-readline \
-       php7.4-xml \
+       apache2 \
+       php7.3-fpm \
+       php7.3-ldap \
+       php7.3-readline \
+       php7.3-xml \
+       ssl-cert \
        openssl \
     && curl -o phpldapadmin.tar.gz -SL https://github.com/leenooks/phpLDAPadmin/archive/${PHPLDAPADMIN_VERSION}.tar.gz \
     && mkdir -p /var/www/phpldapadmin_bootstrap /var/www/phpldapadmin \
