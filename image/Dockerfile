@@ -1,40 +1,17 @@
-FROM osixia/web-baseimage:release-1.2.0-dev
+FROM ubuntu:20.04
 
 # phpLDAPadmin version
 ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
-# Update package lists and upgrade existing packages
-RUN apt-get update && apt-get upgrade -y || { echo "apt-get update/upgrade failed"; exit 1; }
-
-# Add multiple process stack
-RUN /container/tool/add-multiple-process-stack || { echo "Failed to add multiple process stack"; exit 1; }
-
-# Add Apache, PHP-FPM, and SSL tools to services
-RUN /container/tool/add-service-available :apache2 :php7.3-fpm :ssl-tools || { echo "Failed to add services"; exit 1; }
-
-# Install required packages
-RUN LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-       ca-certificates \
-       curl \
-       apache2 \
-       php7.3-fpm \
-       php7.3-ldap \
-       php7.3-readline \
-       php7.3-xml \
-       ssl-cert \
-       openssl \
-    || { echo "Package installation failed"; exit 1; }
-
-# Download and set up phpLDAPadmin
-RUN curl -o phpldapadmin.tar.gz -SL https://github.com/leenooks/phpLDAPadmin/archive/${PHPLDAPADMIN_VERSION}.tar.gz \
+# Installiere die notwendigen Pakete und setze die Umgebung auf
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y apache2 php7.3 php7.3-fpm php7.3-ldap php7.3-readline php7.3-xml curl openssl \
+    && curl -o phpldapadmin.tar.gz -SL https://github.com/leenooks/phpLDAPadmin/archive/${PHPLDAPADMIN_VERSION}.tar.gz \
     && mkdir -p /var/www/phpldapadmin_bootstrap /var/www/phpldapadmin \
     && tar -xzf phpldapadmin.tar.gz --strip 1 -C /var/www/phpldapadmin_bootstrap \
-    && rm phpldapadmin.tar.gz || { echo "phpLDAPadmin setup failed"; exit 1; }
-
-# Clean up unused packages and temporary files
-RUN apt-get remove -y --purge --auto-remove curl ca-certificates \
+    && rm phpldapadmin.tar.gz \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* || { echo "Cleanup failed"; exit 1; }
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configure Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
