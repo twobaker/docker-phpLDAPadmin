@@ -5,7 +5,7 @@ ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
 # Set environment variables to make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Berlin  # Set your desired timezone here
+ENV TZ=Europe/Berlin
 
 # Update package lists and install required packages
 RUN apt-get update && apt-get upgrade -y \
