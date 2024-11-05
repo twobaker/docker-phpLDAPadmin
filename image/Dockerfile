@@ -5,12 +5,13 @@ ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
 # Set environment variables to make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Berlin
+ENV TZ=Europe/Berlin  # Set your desired timezone here
 
 # Update package lists and install required packages
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
        tzdata \
+       ca-certificates \
        apache2 \
        php7.4 \
        php7.4-fpm \
@@ -19,6 +20,7 @@ RUN apt-get update && apt-get upgrade -y \
        php7.4-xml \
        curl \
        openssl \
+    && update-ca-certificates \
     && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     && curl -o phpldapadmin.tar.gz -SL https://github.com/leenooks/phpLDAPadmin/archive/${PHPLDAPADMIN_VERSION}.tar.gz \
