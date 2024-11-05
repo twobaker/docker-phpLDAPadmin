@@ -5,18 +5,18 @@ ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
 # Set environment variables to make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Berlin  # Set your desired timezone here
+ENV TZ=Europe/Berlin
 
 # Update package lists and install required packages
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
        tzdata \
        apache2 \
-       php7.3 \
-       php7.3-fpm \
-       php7.3-ldap \
-       php7.3-readline \
-       php7.3-xml \
+       php7.4 \
+       php7.4-fpm \
+       php7.4-ldap \
+       php7.4-readline \
+       php7.4-xml \
        curl \
        openssl \
     && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
