@@ -3,9 +3,8 @@ FROM osixia/web-baseimage:release-1.2.0-dev
 # phpLDAPadmin version
 ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
-# Update GPG keys and add multiple process stack to supervise apache2 and php7.4-fpm
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
-    && apt-get update \
+# Update packages and install services
+RUN apt-get update \
     && /container/tool/add-multiple-process-stack \
     && /container/tool/add-service-available :apache2 :php7.4-fpm :ssl-tools \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -25,8 +24,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
 
 # Configure Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
-    && echo "SSLUseStapling off" >> /etc/apache2/sites-available/default-ssl.conf \
-    && apt-get install -y --no-install-recommends openssl libssl-dev
+    && echo "SSLUseStapling off" >> /etc/apache2/sites-available/default-ssl.conf
 
 # Add service directory to /container/service
 ADD service /container/service
