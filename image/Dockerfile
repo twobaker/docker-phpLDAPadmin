@@ -3,17 +3,18 @@ FROM osixia/web-baseimage:release-1.2.0-dev
 # phpLDAPadmin version
 ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
-# Update GPG keys and add multiple process stack to supervise apache2 and php7.3-fpm
+# Update GPG keys and add multiple process stack to supervise apache2 and php7.4-fpm
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
     && apt-get update \
     && /container/tool/add-multiple-process-stack \
-    && /container/tool/add-service-available :apache2 :php7.3-fpm :ssl-tools \
+    && /container/tool/add-service-available :apache2 :php7.4-fpm :ssl-tools \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        ca-certificates \
        curl \
-       php7.3-ldap \
-       php7.3-readline \
-       php7.3-xml \
+       php7.4-ldap \
+       php7.4-readline \
+       php7.4-xml \
+       openssl \
     && curl -o phpldapadmin.tar.gz -SL https://github.com/leenooks/phpLDAPadmin/archive/${PHPLDAPADMIN_VERSION}.tar.gz \
     && mkdir -p /var/www/phpldapadmin_bootstrap /var/www/phpldapadmin \
     && tar -xzf phpldapadmin.tar.gz --strip 1 -C /var/www/phpldapadmin_bootstrap \
@@ -21,6 +22,11 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
     && rm phpldapadmin.tar.gz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Configure Apache
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+    && echo "SSLUseStapling off" >> /etc/apache2/sites-available/default-ssl.conf \
+    && apt-get install -y --no-install-recommends openssl libssl-dev
 
 # Add service directory to /container/service
 ADD service /container/service
