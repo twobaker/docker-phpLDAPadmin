@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-# phpLDAPadmin version
+# phpLDAPadmin version - Test
 ARG PHPLDAPADMIN_VERSION=1.2.6.7
 
 # Set environment variables to make apt-get non-interactive
