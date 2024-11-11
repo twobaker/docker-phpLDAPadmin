@@ -13,7 +13,7 @@ load test_helper
   tmp_file="$BATS_TMPDIR/docker-test"
 
   run_image
-  wait_process apache2 php-fpm7.3
+  wait_process apache2 php-fpm7.4
 
   sleep 5
 
