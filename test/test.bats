@@ -44,7 +44,7 @@ load test_helper
   sleep 5
 
   # wait phpLDAPadmin container apache2 service
-  wait_process apache2 php-fpm7.3
+  wait_process apache2 php-fpm7.4
 
   sleep 5
 
